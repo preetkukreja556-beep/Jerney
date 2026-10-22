@@ -1,3 +1,4 @@
+
 {
   "name": "jerney-backend",
   "version": "1.0.0",
@@ -17,5 +18,10 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "nodemon": "^3.1.4"
+  },
+  "overrides": {
+    "chokidar": {
+      "braces": "^3.0.3"
+    }
   }
 }
