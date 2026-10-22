@@ -1,14 +1,15 @@
-FROM node:25-alpine AS build 
+FROM node:22-alpine3.24 AS build
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci && npm cache clean --force 
+RUN apk update && apk upgrade --no-cache && \
+    npm ci && npm cache clean --force
 
 COPY . .
 RUN npm run build
 
-FROM nginx:1.27-alpine
+FROM nginx:stable-alpine3.24
 
 
 # Security: remove default nginx config
@@ -21,7 +22,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Security: run nginx as non-root
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
+RUN apk update && apk upgrade --no-cache && \
+    chown -R nginx:nginx /usr/share/nginx/html && \
     chown -R nginx:nginx /var/cache/nginx && \
     chown -R nginx:nginx /var/log/nginx && \
     touch /var/run/nginx.pid && \
