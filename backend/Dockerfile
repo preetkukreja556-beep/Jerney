@@ -1,12 +1,13 @@
 # ---- Build stage ----
 FROM node:22-alpine AS build
+RUN npm install -g npm@12.2.1
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --only=production && npm cache clean --force
 
 # ---- Production stage ----
 FROM node:22-alpine AS production
-
+RUN npm install -g npm@12.2.1
 # Security: run as non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
